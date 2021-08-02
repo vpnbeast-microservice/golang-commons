@@ -1,4 +1,4 @@
-package options
+package golang_commons
 
 import (
 	"github.com/spf13/viper"
@@ -7,18 +7,6 @@ import (
 	"reflect"
 	"strconv"
 )
-
-var (
-	logger *zap.Logger
-	err    error
-)
-
-func init() {
-	logger, err = zap.NewProduction()
-	if err != nil {
-		panic(err)
-	}
-}
 
 // UnmarshalConfig creates a new *viper.Viper and unmarshalls the config into struct using *viper.Viper
 func UnmarshalConfig(key string, opts interface{}) error {

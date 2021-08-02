@@ -1,4 +1,4 @@
-package logging
+package golang_commons
 
 import "go.uber.org/zap"
 
