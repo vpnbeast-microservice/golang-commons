@@ -1,4 +1,4 @@
-package golang_commons
+package commons
 
 import (
 	"github.com/spf13/viper"

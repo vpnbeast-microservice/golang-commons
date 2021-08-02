@@ -1,4 +1,4 @@
-package golang_commons
+package commons
 
 import "go.uber.org/zap"
 
