@@ -3,16 +3,21 @@ package options
 import (
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
-	"golang-commons/pkg/logging"
 	"os"
 	"reflect"
 	"strconv"
 )
 
-var logger *zap.Logger
+var (
+	logger *zap.Logger
+	err    error
+)
 
 func init() {
-	logger = logging.GetLogger()
+	logger, err = zap.NewProduction()
+	if err != nil {
+		panic(err)
+	}
 }
 
 // UnmarshalConfig creates a new *viper.Viper and unmarshalls the config into struct using *viper.Viper
