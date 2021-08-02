@@ -2,8 +2,8 @@ package options
 
 import (
 	"github.com/spf13/viper"
-	"github.com/vpnbeast/golang-commons/pkg/logging"
 	"go.uber.org/zap"
+	"golang-commons/pkg/logging"
 	"os"
 	"reflect"
 	"strconv"
