@@ -1,4 +1,4 @@
-module golang-commons
+module github.com/vpnbeast/golang-commons
 
 go 1.16
 
