@@ -45,10 +45,11 @@ func GetIntEnv(key string, defaultValue int) int {
 	if len(value) == 0 {
 		return defaultValue
 	}
-	return convertStringToInt(value)
+	return ConvertStringToInt(value)
 }
 
-func convertStringToInt(s string) int {
+// ConvertStringToInt converts string environment variables to integer values
+func ConvertStringToInt(s string) int {
 	i, err := strconv.Atoi(s)
 	if err != nil {
 		logger.Warn("an error occurred while converting from string to int. Setting it as zero",
