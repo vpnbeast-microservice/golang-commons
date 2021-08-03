@@ -1,15 +1,17 @@
 package commons
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"net/http"
 	"os"
 	"reflect"
 	"strconv"
 )
 
-// UnmarshalConfig creates a new *viper.Viper and unmarshalls the config into struct using *viper.Viper
-func UnmarshalConfig(key string, opts interface{}) error {
+// unmarshalConfig creates a new *viper.Viper and unmarshalls the config into struct using *viper.Viper
+func unmarshalConfig(key string, opts interface{}) error {
 	sub := viper.Sub(key)
 	sub.AutomaticEnv()
 	sub.SetEnvPrefix(key)
@@ -30,8 +32,8 @@ func bindEnvs(sub *viper.Viper, opts interface{}) {
 	}
 }
 
-// GetStringEnv gets the specific environment variables with default value, returns default value if variable not set
-func GetStringEnv(key, defaultValue string) string {
+// getStringEnv gets the specific environment variables with default value, returns default value if variable not set
+func getStringEnv(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if len(value) == 0 {
 		return defaultValue
@@ -39,8 +41,8 @@ func GetStringEnv(key, defaultValue string) string {
 	return value
 }
 
-// GetIntEnv gets the specific environment variables with default value, returns default value if variable not set
-func GetIntEnv(key string, defaultValue int) int {
+// getIntEnv gets the specific environment variables with default value, returns default value if variable not set
+func getIntEnv(key string, defaultValue int) int {
 	value := os.Getenv(key)
 	if len(value) == 0 {
 		return defaultValue
@@ -57,4 +59,50 @@ func ConvertStringToInt(s string) int {
 		i = 0
 	}
 	return i
+}
+
+// InitOptions gets options interface and appName as parameter and loads the configuration from remote config store
+func InitOptions(opts interface{}, name string) error {
+	activeProfile := getStringEnv("ACTIVE_PROFILE", "local")
+	appName := getStringEnv("APP_NAME", name)
+	if activeProfile == "unit-test" {
+		logger.Info("active profile is unit-test, reading configuration from static file")
+		// TODO: better approach for that?
+		viper.AddConfigPath("./../../config")
+		viper.SetConfigName("unit_test")
+		viper.SetConfigType("yaml")
+		if err := viper.ReadInConfig(); err != nil {
+			return err
+		}
+	} else {
+		configHost := getStringEnv("CONFIG_SERVER_HOST", "localhost")
+		configPort := getIntEnv("CONFIG_SERVER_PORT", 8888)
+		logger.Info("loading configuration from remote server", zap.String("host", configHost),
+			zap.Int("port", configPort), zap.String("appName", appName),
+			zap.String("activeProfile", activeProfile))
+		confAddr := fmt.Sprintf("http://%s:%d/%s-%s.yaml", configHost, configPort, appName, activeProfile)
+		resp, err := http.Get(confAddr)
+		if err != nil {
+			return err
+		}
+
+		defer func() {
+			err := resp.Body.Close()
+			if err != nil {
+				panic(err)
+			}
+		}()
+
+		viper.SetConfigName("application")
+		viper.SetConfigType("yaml")
+		if err = viper.ReadConfig(resp.Body); err != nil {
+			return err
+		}
+	}
+
+	if err := unmarshalConfig(appName, opts); err != nil {
+		return err
+	}
+
+	return nil
 }
