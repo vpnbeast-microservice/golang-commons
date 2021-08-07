@@ -64,8 +64,8 @@ func InitOptions(opts interface{}, name string) error {
 			return err
 		}
 	} else {
-		configHost := getStringEnv("CONFIG_SERVER_HOST", "localhost")
-		configPort := getIntEnv("CONFIG_SERVER_PORT", 8888)
+		configHost := getStringEnv("CONFIG_SERVICE_HOST", "localhost")
+		configPort := getIntEnv("CONFIG_SERVICE_PORT", 8888)
 		logger.Info("loading configuration from remote server", zap.String("host", configHost),
 			zap.Int("port", configPort), zap.String("appName", appName),
 			zap.String("activeProfile", activeProfile))
