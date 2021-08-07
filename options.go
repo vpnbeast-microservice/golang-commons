@@ -2,12 +2,12 @@ package commons
 
 import (
 	"fmt"
+	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"net/http"
 	"os"
 	"reflect"
-	"strconv"
 )
 
 // unmarshalConfig creates a new *viper.Viper and unmarshalls the config into struct using *viper.Viper
@@ -47,18 +47,7 @@ func getIntEnv(key string, defaultValue int) int {
 	if len(value) == 0 {
 		return defaultValue
 	}
-	return ConvertStringToInt(value)
-}
-
-// ConvertStringToInt converts string environment variables to integer values
-func ConvertStringToInt(s string) int {
-	i, err := strconv.Atoi(s)
-	if err != nil {
-		logger.Warn("an error occurred while converting from string to int. Setting it as zero",
-			zap.String("error", err.Error()))
-		i = 0
-	}
-	return i
+	return cast.ToInt(value)
 }
 
 // InitOptions gets options interface and appName as parameter and loads the configuration from remote config store
