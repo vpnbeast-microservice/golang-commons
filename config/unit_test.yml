@@ -1,0 +1,6 @@
+---
+### Unit testing properties ###
+
+dummy-service:
+  foo: foo
+  bar: bar
