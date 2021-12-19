@@ -4,3 +4,4 @@
 dummy-service:
   foo: foo
   bar: bar
+  length: 12

@@ -101,6 +101,7 @@ jobs:
       - name: Coverage Test
         env:
           ACTIVE_PROFILE: unit-test
+          CONFIG_PATH: "./"
         run: go test ./... -race -coverprofile=coverage.txt -covermode=atomic
       - name: Coverage Upload
         run: bash <(curl -s https://codecov.io/bash)

@@ -7,8 +7,9 @@ import (
 )
 
 type DummyServiceOptions struct {
-	Foo string `env:"FOO"`
-	Bar string `env:"BAR"`
+	Foo    string `env:"FOO"`
+	Bar    string `env:"BAR"`
+	Length int    `env:"LENGTH"`
 }
 
 func TestInitOptions(t *testing.T) {
@@ -19,5 +20,6 @@ func TestInitOptions(t *testing.T) {
 	assert.NotNil(t, opts.Bar)
 	assert.Equal(t, "foo", opts.Foo)
 	assert.Equal(t, "bar", opts.Bar)
+	assert.Equal(t, 12, opts.Length)
 	log.Println(opts)
 }
