@@ -75,3 +75,8 @@ func TestGetIntEnv(t *testing.T) {
 	val := getIntEnv("NON_EXISTED_ENV", 12)
 	assert.Equal(t, 12, val)
 }
+
+func TestGetStringEnv(t *testing.T) {
+	val := getStringEnv("NON_EXISTED_ENV", "asdasfas")
+	assert.Equal(t, "asdasfas", val)
+}
