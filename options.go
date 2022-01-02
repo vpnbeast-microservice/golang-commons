@@ -52,7 +52,7 @@ func getIntEnv(key string, defaultValue int) int {
 
 // InitOptions gets options interface and appName as parameter and loads the configuration from remote config store
 func InitOptions(opts interface{}, name string) error {
-	activeProfile := getStringEnv("ACTIVE_PROFILE", "local")
+	activeProfile := getStringEnv("ACTIVE_PROFILE", "remote")
 	configPath := getStringEnv("CONFIG_PATH", "./../../")
 	appName := getStringEnv("APP_NAME", name)
 	if activeProfile == "unit-test" {
