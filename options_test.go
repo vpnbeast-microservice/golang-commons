@@ -57,3 +57,21 @@ func TestInitOptionsRemoteServer(t *testing.T) {
 	assert.Equal(t, "bar", opts.Bar)
 	assert.Equal(t, 12, opts.Length)
 }
+
+func TestInitOptionsRemoteServerWrongPort(t *testing.T) {
+	appName := "dummy-service"
+	profile := "remote"
+	_ = os.Setenv("ACTIVE_PROFILE", profile)
+	_ = os.Setenv("CONFIG_PATH", "./")
+
+	_ = os.Setenv("CONFIG_SERVICE_HOST", "127.0.0.1")
+	_ = os.Setenv("CONFIG_SERVICE_PORT", "1123")
+	opts := &DummyServiceOptions{}
+	err := InitOptions(opts, appName)
+	assert.NotNil(t, err)
+}
+
+func TestGetIntEnv(t *testing.T) {
+	val := getIntEnv("NON_EXISTED_ENV", 12)
+	assert.Equal(t, 12, val)
+}

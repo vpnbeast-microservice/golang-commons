@@ -17,6 +17,7 @@ func unmarshalConfig(key string, opts interface{}) error {
 	sub.SetEnvPrefix(key)
 	// t := reflect.TypeOf(opts)
 	bindEnvs(sub, opts)
+
 	return sub.Unmarshal(opts)
 }
 
@@ -54,7 +55,6 @@ func getIntEnv(key string, defaultValue int) int {
 func InitOptions(opts interface{}, name string) error {
 	activeProfile := getStringEnv("ACTIVE_PROFILE", "remote")
 	configPath := getStringEnv("CONFIG_PATH", "./../../")
-	appName := getStringEnv("APP_NAME", name)
 	if activeProfile == "unit-test" {
 		logger.Info("active profile is unit-test, reading configuration from static file")
 		viper.AddConfigPath(configPath + "config")
@@ -67,9 +67,9 @@ func InitOptions(opts interface{}, name string) error {
 		configHost := getStringEnv("CONFIG_SERVICE_HOST", "localhost")
 		configPort := getIntEnv("CONFIG_SERVICE_PORT", 8888)
 		logger.Info("loading configuration from remote server", zap.String("host", configHost),
-			zap.Int("port", configPort), zap.String("appName", appName),
+			zap.Int("port", configPort), zap.String("appName", name),
 			zap.String("activeProfile", activeProfile))
-		confAddr := fmt.Sprintf("http://%s:%d/%s-%s.yaml", configHost, configPort, appName, activeProfile)
+		confAddr := fmt.Sprintf("http://%s:%d/%s-%s.yaml", configHost, configPort, name, activeProfile)
 		resp, err := http.Get(confAddr)
 		if err != nil {
 			return err
@@ -89,7 +89,7 @@ func InitOptions(opts interface{}, name string) error {
 		}
 	}
 
-	if err := unmarshalConfig(appName, opts); err != nil {
+	if err := unmarshalConfig(name, opts); err != nil {
 		return err
 	}
 
